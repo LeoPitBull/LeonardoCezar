@@ -2,7 +2,7 @@
 
     $dbHost = 'Localhost';
     $dbUsername = 'root';
-    $dbPassword = 'escola';
+    $dbPassword = '';
     $dbName = 'viel';
     
     $conexao = new mysqli($dbHost,$dbUsername,$dbPassword,$dbName);

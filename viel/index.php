@@ -76,7 +76,7 @@
       <a href="preto.php"> <!-- Adicione a URL da página de compra aqui -->
         <img src="img/camisetapreta1.jpeg" alt="Produto 1">
         <div class="info">
-          <p class="nome">Camiseta Slim - Preto</p>
+          <p class="nome">Camiseta Slim - Preta</p>
           <p class="preco">R$109,99</p>
           <!-- Adicione outras informações aqui -->
         </div>

@@ -1,7 +1,11 @@
 <?php
     session_start();
     if(isset($_POST['submit']) && !empty($_POST['cpf']) && !empty($_POST['email']) && !empty($_POST['senha']))
-    {
+
+        if ($row['tipo'] == 1) {
+            $_SESSION['email'] = $row['email'];
+                header("Location: adm.php"); // Redireciona para administrador
+            } else {
         include_once('config.php');
         $cpf = $_POST['cpf'];
         $email = $_POST['email'];
