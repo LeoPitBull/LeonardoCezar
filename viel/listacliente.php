@@ -6,7 +6,7 @@ include_once('config.php');
 $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
 
 // Cria a consulta SQL com filtragem por nome ou email
-$sql = "SELECT nome, email, senha, telefone, endereco, cidade, estado, tipo 
+$sql = "SELECT cpf, nome, email, senha, telefone, endereco, cidade, estado 
         FROM clientes 
         WHERE nome LIKE '%$searchTerm%' 
         OR email LIKE '%$searchTerm%'";
@@ -91,7 +91,6 @@ echo "<h1>Lista de Cliente</h1>";
                     <th scope="col">endereco</th>
                     <th scope="col">cidade</th>
                     <th scope="col">estado</th>
-                    <th scope="col">tipo</th>
                     <th scope="col">...</th>
                 </tr>
             </thead>
@@ -107,7 +106,6 @@ echo "<h1>Lista de Cliente</h1>";
                         echo "<td>".$user_data['endereco']."</td>";
                         echo "<td>".$user_data['cidade']."</td>";
                         echo "<td>".$user_data['estado']."</td>";
-                        echo "<td>".$user_data['tipo']."</td>";
                         echo "<td>
                         <a class='btn btn-sm btn-primary' href='edit.php?email=$user_data[email]' title='Editar'>
                             <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-pencil' viewBox='0 0 16 16'>

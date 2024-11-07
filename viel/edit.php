@@ -1,15 +1,23 @@
 <?php
 include_once('config.php');
 
-// Verifica se o parâmetro 'email' foi enviado via GET
-if (isset($_GET['email'])) {
-    // Sanitiza o email para evitar injeção de SQL
-    $email = mysqli_real_escape_string($conexao, $_GET['email']);
+// Verifica se o parâmetro 'cpf' foi enviado via GET
+if (isset($_GET['cpf'])) {
+    // Sanitiza o CPF para evitar injeção de SQL
+    $cpf = mysqli_real_escape_string($conexao, $_GET['cpf']);
 
     // Prepara a consulta SQL utilizando prepared statements
-    $sql = "SELECT * FROM clientes WHERE email=?";
+    $sql = "SELECT * FROM clientes WHERE cpf=?";
     $stmt = $conexao->prepare($sql);
-    $stmt->bind_param("s", $email);
+
+    if ($stmt === false) {
+        // Caso a preparação da consulta falhe
+        echo "Erro ao preparar a consulta: " . $conexao->error;
+        exit;
+    }
+
+    // Associa o parâmetro (o CPF, no caso) ao statement
+    $stmt->bind_param("s", $cpf);
 
     // Executa a consulta
     if ($stmt->execute()) {
@@ -20,6 +28,7 @@ if (isset($_GET['email'])) {
             $user_data = $result->fetch_assoc();
 
             // Atribui os valores aos campos do formulário
+            $cpf = $user_data['cpf'];
             $nome = $user_data['nome'];
             $email = $user_data['email'];
             // ... outros campos ...
@@ -35,10 +44,12 @@ if (isset($_GET['email'])) {
     // Fecha o statement
     $stmt->close();
 } else {
+    // Redireciona para a página listacliente.php caso o parâmetro 'cpf' não seja fornecido
     header('Location: listacliente.php');
     exit;
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -160,13 +171,6 @@ if (isset($_GET['email'])) {
             <option value="PR">Paraná</option>
             <option value="RJ">Rio de Janeiro</option>
             <option value="MG">Minas Gerais</option>
-        </select>
-        <label for="tipo">tipo:</label>
-        <select id="tipo" name="tipo" required>
-            <option value="" disabled selected>Selecione o tipo</option>
-            <option value="0">Usuario</option>
-            <option value="1">Admin</option>
-           
         </select>
 
         <br><br>

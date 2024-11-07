@@ -1,13 +1,17 @@
 <?php
-session_start();
+    session_start();
+    if ((!isset($_SESSION['cpf']) == true) and (!isset($_SESSION['cpf']) == true))
+    {
+        unset($_SESSION['cpf']);
+        unset($_SESSION['email']);
+        unset($_SESSION['senha']);
+        header('Location: login.php');
+    }
+    $acesso = $_SESSION['cpf'];
 
-// Verificar se o usuário está logado e se é usuário normal
-if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'usuario') {
-    // Se não for usuário normal, redirecionar para o login
-    header("Location: login.php"); // Página de login
-    exit;
-}
 ?>
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
