@@ -1,53 +1,46 @@
 <?php
 session_start();
+include_once('config.php'); // Inclui o arquivo de configuração do banco
 
-// Verifica se o formulário foi enviado e se os campos necessários não estão vazios
+// Verificar se o formulário foi enviado e se todos os campos estão preenchidos
 if (isset($_POST['submit']) && !empty($_POST['cpf']) && !empty($_POST['email']) && !empty($_POST['senha'])) {
-
-    // Inclui a configuração da conexão
-    include_once('config.php');
-    
-    // Recebe os dados do formulário
     $cpf = $_POST['cpf'];
     $email = $_POST['email'];
     $senha = $_POST['senha'];
 
-    // Preparação da consulta SQL para evitar SQL Injection
-    $sql = "SELECT * FROM clientes WHERE cpf = ? AND email = ? AND senha = ?";
+    // Consulta segura usando prepared statements para evitar SQL Injection
+    $stmt = $conexao->prepare("SELECT * FROM clientes WHERE cpf = ? AND email = ? AND senha = ?");
+    $stmt->bind_param("sss", $cpf, $email, $senha); // "sss" indica três strings
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    // Prepara a consulta
-    if ($stmt = $conexao->prepare($sql)) {
-        // Bind dos parâmetros
-        $stmt->bind_param("sss", $cpf, $email, $senha); // "sss" indica que todos os parâmetros são strings
-        
-        // Executa a consulta
-        $stmt->execute();
-        
-        // Verifica o número de resultados
-        $result = $stmt->get_result();
-        
-        if ($result->num_rows < 1) {
-            // Se não encontrar usuário, limpa as variáveis da sessão
-            unset($_SESSION['cpf']);
-            unset($_SESSION['email']);
-            unset($_SESSION['senha']);
-            header('Location: login.php');
-        } else {
-            // Se encontrar o usuário, armazena os dados na sessão
+    // Verificar se encontrou algum registro
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+
+        // Verificar o tipo de usuário (0 ou 1)
+        if ((int)$row['tipo'] === 1) { // Administrador
+            $_SESSION['email'] = $row['email'];
+            header("Location: adm.php"); // Redireciona para a página do administrador
+            exit; // Adiciona o exit após o redirecionamento
+        } elseif ((int)$row['tipo'] === 0) { // Usuário normal
             $_SESSION['cpf'] = $cpf;
             $_SESSION['email'] = $email;
             $_SESSION['senha'] = $senha;
-            header('Location: index.php');
+            header("Location: index.php"); // Redireciona para a página inicial
+            exit; // Adiciona o exit após o redirecionamento
         }
-        
-        // Fecha a consulta
-        $stmt->close();
     } else {
-        // Caso a consulta não possa ser preparada
-        echo "Erro na preparação da consulta: " . $conexao->error;
+        // Limpar sessões e redirecionar para login se os dados forem inválidos
+        unset($_SESSION['cpf']);
+        unset($_SESSION['email']);
+        unset($_SESSION['senha']);
+        header('Location: login.php');
+        exit; // Adiciona o exit após o redirecionamento
     }
 } else {
-    // Caso os campos obrigatórios não sejam preenchidos
-    header('Location: login.php');
+    // Redirecionar para o login caso os campos não estejam preenchidos
+   // header('Location: login.php');
+    //exit; // Adiciona o exit após o redirecionamento
 }
 ?>

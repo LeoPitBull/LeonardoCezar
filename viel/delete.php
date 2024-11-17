@@ -1,40 +1,35 @@
 <?php
-include_once('config.php');
 
-if (!empty($_GET['email'])) {
-    $email = mysqli_real_escape_string($conexao, $_GET['email']);
+if (!empty($_GET['cpf'])) {
+    include_once('config.php');
 
-    // Prepare the SELECT query
-    $sqlSelect = "SELECT * FROM clientes WHERE email=?";
-    $stmtSelect = $conexao->prepare($sqlSelect);
-    $stmtSelect->bind_param("s", $email);
+    $cpf = $_GET['cpf'];
 
-    // Execute the SELECT query
-    if ($stmtSelect->execute()) {
-        $result = $stmtSelect->get_result();
+    // Usando consultas preparadas para evitar injeção de SQL
+    $sqlSelect = "SELECT * FROM clientes WHERE cpf = ?";
+    $stmt = $conexao->prepare($sqlSelect);
+    $stmt->bind_param("s", $cpf); // Bind do parâmetro
 
-        if ($result->num_rows > 0) {
-            // Prepare the DELETE query
-            $sqlDelete = "DELETE FROM clientes WHERE email=?";
-            $stmtDelete = $conexao->prepare($sqlDelete);
-            $stmtDelete->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-            // Execute the DELETE query
-            if ($stmtDelete->execute()) {
-                echo "Cliente deletado com sucesso!";
-            } else {
-                echo "Erro ao deletar cliente: " . $stmtDelete->error;
-            }
+    if ($result->num_rows > 0) {
+        $sqlDelete = "DELETE FROM clientes WHERE cpf = ?";
+        $stmtDelete = $conexao->prepare($sqlDelete);
+        $stmtDelete->bind_param("s", $cpf); // Bind do parâmetro
+
+        if ($stmtDelete->execute()) {
+            // Exclusão bem-sucedida
         } else {
-            echo "Cliente não encontrado.";
+            echo "Erro ao excluir: " . $stmtDelete->error;
         }
-    } else {
-        echo "Erro ao executar a consulta SELECT: " . $stmtSelect->error;
+
+        $stmtDelete->close();
     }
 
-    // Close statements
-    $stmtSelect->close();
-    $stmtDelete->close();
+    $stmt->close();
 }
 
 header('Location: listacliente.php');
+exit; // Sempre bom usar exit após redirecionar
+?>

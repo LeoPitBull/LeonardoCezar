@@ -3,20 +3,12 @@ include_once('config.php');
 
 // Verifica se o parâmetro 'cpf' foi enviado via GET
 if (isset($_GET['cpf'])) {
-    // Sanitiza o CPF para evitar injeção de SQL
+    // Sanitiza o cpf para evitar injeção de SQL
     $cpf = mysqli_real_escape_string($conexao, $_GET['cpf']);
 
     // Prepara a consulta SQL utilizando prepared statements
     $sql = "SELECT * FROM clientes WHERE cpf=?";
     $stmt = $conexao->prepare($sql);
-
-    if ($stmt === false) {
-        // Caso a preparação da consulta falhe
-        echo "Erro ao preparar a consulta: " . $conexao->error;
-        exit;
-    }
-
-    // Associa o parâmetro (o CPF, no caso) ao statement
     $stmt->bind_param("s", $cpf);
 
     // Executa a consulta
@@ -24,14 +16,19 @@ if (isset($_GET['cpf'])) {
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            // Obtém os dados do usuário
+            // Obtém os dados do cliente
             $user_data = $result->fetch_assoc();
 
             // Atribui os valores aos campos do formulário
-            $cpf = $user_data['cpf'];
             $nome = $user_data['nome'];
+            $cpf = $user_data['cpf'];
             $email = $user_data['email'];
-            // ... outros campos ...
+            $senha = $user_data['senha'];
+            $telefone = $user_data['telefone'];
+            $endereco = $user_data['endereco'];
+            $cidade = $user_data['cidade'];
+            $estado = $user_data['estado'];
+            $tipo = $user_data['tipo'];
         } else {
             echo "Usuário não encontrado.";
             exit;
@@ -44,140 +41,191 @@ if (isset($_GET['cpf'])) {
     // Fecha o statement
     $stmt->close();
 } else {
-    // Redireciona para a página listacliente.php caso o parâmetro 'cpf' não seja fornecido
     header('Location: listacliente.php');
     exit;
 }
 ?>
 
-
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Cadastro de Cliente</title>
+    <title>Editar Cliente</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
+        /* Resetando margens e padding */
+        * {
             margin: 0;
             padding: 0;
-            background: url(imagem.jpg);
-            background-size: 600px;
-             background-repeat: no-repeat;
-             background-position-x: center;
-        }
-        h1{
-            text-align: center;
-        }
-        header{
-            background-color: #0000cd;
-             padding: 10px 0;
-            text-align: center;
-            }
-        form {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 16px;
             box-sizing: border-box;
         }
 
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7fb;
+            color: #2d3436;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #007bff;
+            color: #fff;
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            position: absolute;
+            top: 0;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        .form-container {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 650px;
+            padding: 40px;
+            margin-top: 80px;
+            box-sizing: border-box;
+        }
+
+        .form-container h2 {
+            font-size: 1.8rem;
+            color: #007bff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        input,
+        select {
+            padding: 12px 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+        }
+
         input[type="submit"] {
-            background-color: #0000cd;
-            color: white;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
             cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 15px;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
         }
 
         input[type="submit"]:hover {
-            background-color: #0000cd;
+            background-color: #0056b3;
         }
-        header{
-    background-color: #0000cd;
-    padding: 10px 0;
-    text-align: center;
-    }
 
-    nav ul{
-    list-style: none;
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1rem;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
 
-    }
+        .back-link:hover {
+            text-decoration: underline;
+        }
 
-        nav ul li{
-    display: inline;
-    margin-right: 20px;
-    }
-    nav ul li a{
-    text-decoration: none;
-    color: #0000cd;
-    font-weight: bold;
-    }
+        /* Estilos para dispositivos móveis */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 25px;
+                width: 90%;
+            }
+
+            header h1 {
+                font-size: 1.5rem;
+            }
+        }
 
     </style>
 </head>
 <body>
-    <header>
-        <h1>viɘl</h1>
-        <nav>
-            <ul>
-                <li><a href="index.html">HOME</a></li>
-                <li><a href="contato.html">CONTATO</a></li>
-                
-              </ul>
-        </nav>
-       
-    </header>
-    <h1>Cadastro de Cliente</h1>
-    <body>
-    <a href="listacliente.php">Voltar</a>
-    <div class="box">
-        <form action="saveEdit.php" method="POST">
-            <fieldset>
-                <legend><b>Editar Cliente</b></legend>
-                <br>
-                <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" required>
+
+<header>
+    <h1>viɘl</h1>
+</header>
+
+<div class="form-container">
+    <h2>Editar Cliente</h2>
+    <form action="saveEdit.php" method="POST">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" value="<?php echo htmlspecialchars($nome); ?>" required>
 
         <label for="email">E-mail:</label>
-        <input type="email" id="email" name="email" required>
+        <input type="text" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required readonly>
 
         <label for="senha">Senha:</label>
-        <input type="password" id="senha" name="senha" required>
+        <input type="password" id="senha" name="senha" value="<?php echo htmlspecialchars($senha); ?>" required>
 
         <label for="telefone">Telefone:</label>
-        <input type="tel" id="telefone" name="telefone" required>
+        <input type="tel" id="telefone" name="telefone" value="<?php echo htmlspecialchars($telefone); ?>" required>
 
         <label for="endereco">Endereço:</label>
-        <input type="text" id="endereco" name="endereco" required>
+        <input type="text" id="endereco" name="endereco" value="<?php echo htmlspecialchars($endereco); ?>" required>
 
         <label for="cidade">Cidade:</label>
-        <input type="text" id="cidade" name="cidade" required>
+        <input type="text" id="cidade" name="cidade" value="<?php echo htmlspecialchars($cidade); ?>" required>
 
         <label for="estado">Estado:</label>
         <select id="estado" name="estado" required>
-            <option value="" disabled selected>Selecione o estado</option>
-            <!-- Inserir opções de estados aqui -->
-            <option value="PR">Paraná</option>
-            <option value="RJ">Rio de Janeiro</option>
-            <option value="MG">Minas Gerais</option>
+            <option value="" disabled>Selecione o estado</option>
+            <option value="PR" <?php echo ($estado == 'PR') ? 'selected' : ''; ?>>Paraná</option>
+            <option value="RJ" <?php echo ($estado == 'RJ') ? 'selected' : ''; ?>>Rio de Janeiro</option>
+            <option value="MG" <?php echo ($estado == 'MG') ? 'selected' : ''; ?>>Minas Gerais</option>
         </select>
 
-        <br><br>
-				<input type="hidden" name="email" value=<?php echo $email;?>>
-                <input type="submit" name="update" id="submit">
-            </fieldset>
-        </form>
-    </div>
+        <label for="tipo">Tipo:</label>
+        <select id="tipo" name="tipo" required>
+            <option value="0" <?php echo ($tipo == '0') ? 'selected' : ''; ?>>Usuário</option>
+            <option value="1" <?php echo ($tipo == '1') ? 'selected' : ''; ?>>Admin</option>
+        </select>
 
+        <input type="hidden" name="cpf" value="<?php echo $cpf; ?>">
+        <input type="submit" name="update" value="Atualizar">
+    </form>
+    <a href="listacliente.php" class="back-link">Voltar</a>
+</div>
+
+</body>
 </html>

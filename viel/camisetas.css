@@ -3,6 +3,32 @@ body {
     margin: 20px;
 }
 
+header {
+    background-color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.viel h2 {
+    max-width: 100%;
+    height: auto;
+    max-height: 100px; /* Defina a altura máxima desejada */
+    text-align: center;
+}
+
+.viel a {
+    text-decoration: none; /* Remove o sublinhado padrão */
+    color: inherit; /* Herda a cor do texto padrão */
+}
+
+.viel a:hover {
+    text-decoration: none; /* Remove o sublinhado ao passar o mouse */
+    color: inherit; /* Mantém a cor do texto ao passar o mouse */
+}
+
+
 form {
     width: 400px;
     margin: 0 auto;

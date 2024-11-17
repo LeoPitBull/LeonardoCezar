@@ -1,13 +1,7 @@
 <?php
- session_start();
- include_once('config.php');
- // print_r($_SESSION);
- if((!isset($_SESSION['cpf']) == true) and (!isset($_SESSION['email']) == true))
- {
-     unset($_SESSION['cpf']);
-     unset($_SESSION['email']);
- }
+include_once('config.php');
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -15,51 +9,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
   <title>viɘl</title>
-  <style>
-        /* Estilos para o dropdown */
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            background-color: #fff;
-            min-width: 200px;
-            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-            z-index: 1;
-            border-radius: 8px;
-            padding: 10px 0;
-        }
-
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
-
-        .dropdown-content a:hover {
-            background-color: white;
-            color: red;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .dropdown a {
-            display: flex;
-            align-items: center;
-            font-size: 18px;
-            color: black;
-            text-decoration: none;
-        }
-
-        
-    </style>
 </head>
 <body>
 
@@ -68,34 +17,31 @@
     <div class="search-bar">
       <input type="text" placeholder="Pesquisar">
       <button type="button">
-      <img src="lupa.png" alt="Pesquisar">
+        <img src="lupa.png" alt="Pesquisar">
       </button>
     </div>
 
     <div class="viel">
-      <a href="index.php">
-      <h2>viɘl</h2>
+      <a href="inicio.php">
+        <h2>viɘl</h2>
       </a>
     </div>
 
-    <div class="login dropdown">
-        <a href="javascript:void(0)">
-            <ion-icon id="icone" name="person-outline"></ion-icon>
-        </a>
-        <div class="dropdown-content">
-            <a href="sair.php">Sair</a>
-        </div>
+    <div class="login">
+      <a href="login.php">
+        <ion-icon id="icone" name="person-outline"></ion-icon>
+      </a>
     </div>
 
     <div class="cart">
-            <a href="carrinho.php"><ion-icon name="cart-outline"></ion-icon></a>
-    </div>
+    <a href="carrinho.php" id="iconeCarrinho"><ion-icon name="cart-outline"></ion-icon></a>
+</div>
   </header>
 
   <!-- Navegação -->
   <nav>
     <ul class="navbar">
-      <li><a href="index.php">Início</a></li>
+      <li><a href="inicio.php">Início</a></li>
       <li><a href="#">Categorias</a></li>
       <li><a href="tabelademedidas.html">Tabela de Medidas</a></li>
       <li><a href="contato.html">Contato</a></li>
@@ -110,6 +56,7 @@
           <img src="img/lançamentojaqueta.jpeg" alt="Imagem 1">
         </a>
       </div>
+    </div>
     <button class="carousel-prev">&lt;</button>
     <button class="carousel-next">&gt;</button>
   </div>
@@ -152,7 +99,7 @@
                         <input type='hidden' name='nome' value='" . htmlspecialchars($row['cor']) . " - " . htmlspecialchars($row['tamanho']) . "'>
                         <input type='hidden' name='preco' value='" . $row['valor'] . "'>
                         <input type='hidden' name='quantidade' value='1'> <!-- Quantidade fixa para 1 -->
-                        <button type='submit' name='adicionar_ao_carrinho'>Adicionar ao Carrinho</button>
+                        <button type='submit' class='adicionar_ao_carrinho'>Adicionar ao Carrinho</button>
                     </form>
                 </div>
                 ";
@@ -167,9 +114,7 @@
         $conexao->close();
         ?>
     </div>
-</section>
-
-
+  </section>
 
   <!-- JavaScript para o carrossel -->
   <script src="script.js"></script>
@@ -199,24 +144,39 @@
 
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
   <script>
-        // Opcional: adicionar comportamento de clique para abrir o dropdown
-        const dropdown = document.querySelector('.dropdown');
-        const dropdownContent = document.querySelector('.dropdown-content');
-        const loginIcon = document.querySelector('.login a');
+    // Aguardar o DOM estar completamente carregado
+    document.addEventListener("DOMContentLoaded", function() {
+      // Captura todos os botões "Adicionar ao Carrinho"
+      const botoesAdicionar = document.querySelectorAll('.adicionar_ao_carrinho');
 
-        // Quando o ícone de login for clicado, mostrar ou esconder o dropdown
-        loginIcon.addEventListener('click', function(event) {
-            event.preventDefault();  // Impede a navegação do link
-            dropdownContent.style.display = (dropdownContent.style.display === 'block') ? 'none' : 'block';
-        });
+      // Adiciona o evento de clique para cada botão
+      botoesAdicionar.forEach(function(botao) {
+        botao.addEventListener("click", function(event) {
+          // Impede a ação padrão do botão
+          event.preventDefault();
 
-        // Fechar o dropdown quando o usuário clicar fora dele
-        window.addEventListener('click', function(event) {
-            if (!dropdown.contains(event.target)) {
-                dropdownContent.style.display = 'none';
-            }
+          // Exibe um alerta informando que a ação foi bloqueada
+          alert("Desculpe, você precisa estar logado para adicionar este item ao carrinho.");
         });
-    </script>
+      });
+    });
+  </script>
+
+<script>
+    // Captura o ícone do carrinho
+    const iconeCarrinho = document.getElementById('iconeCarrinho');
+
+    // Adiciona o evento de clique
+    iconeCarrinho.addEventListener('click', function(event) {
+        // Impede a ação padrão do link (navegação para a página carrinho.php)
+        event.preventDefault();
+
+        // Exibe um alerta informando que o carrinho não pode ser acessado
+        alert("Desculpe, você precisa estar logado para acessar o carrinho.");
+    });
+</script>
+
 </body>
 </html>

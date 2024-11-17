@@ -6,19 +6,21 @@ include_once('config.php');
 if (isset($_POST['update'])) {
     // Sanitiza os dados do formulário para evitar injeção de SQL
     $nome = mysqli_real_escape_string($conexao, $_POST['nome']);
+    $cpf = mysqli_real_escape_string($conexao, $_POST['cpf']);
     $email = mysqli_real_escape_string($conexao, $_POST['email']);
     $senha = mysqli_real_escape_string($conexao, $_POST['senha']);
     $telefone = mysqli_real_escape_string($conexao, $_POST['telefone']);
     $endereco = mysqli_real_escape_string($conexao, $_POST['endereco']);
     $cidade = mysqli_real_escape_string($conexao, $_POST['cidade']);
     $estado = mysqli_real_escape_string($conexao, $_POST['estado']);
+    $tipo = mysqli_real_escape_string($conexao, $_POST['tipo']);
 
     // Prepara a consulta SQL utilizando prepared statements
    
     //
-    $sqlUpdate = "UPDATE clientes SET nome=?, email=?, senha=?, telefone=?, endereco=?, cidade=?, estado=? WHERE cpf=?";
+    $sqlUpdate = "UPDATE clientes SET nome=?, email=?, senha=?, telefone=?, endereco=?, cidade=?, estado=?, tipo=? WHERE cpf=?";
     $stmt = $conexao->prepare($sqlUpdate);
-    $stmt->bind_param("ssssssss", $nome, $email, $senha, $telefone, $endereco, $cidade, $estado, $cpf);
+    $stmt->bind_param("sssssssss", $nome, $email, $senha, $telefone, $endereco, $cidade, $estado, $tipo, $cpf);
 
 
 

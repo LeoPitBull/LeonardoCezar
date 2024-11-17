@@ -36,15 +36,29 @@
         }
 
         header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 99;
-            border-bottom: var(--border);
-            background-color: var(--white);
-            padding: 1rem 0;
-        }
+    background-color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.viel h2 {
+    max-width: 100%;
+    height: auto;
+    max-height: 100px; /* Defina a altura máxima desejada */
+    text-align: center;
+}
+
+.viel a {
+    text-decoration: none; /* Remove o sublinhado padrão */
+    color: inherit; /* Herda a cor do texto padrão */
+}
+
+.viel a:hover {
+    text-decoration: none; /* Remove o sublinhado ao passar o mouse */
+    color: inherit; /* Mantém a cor do texto ao passar o mouse */
+}
 
         .menu {
             display: flex;
@@ -141,14 +155,14 @@
 </head>
 <body>
 <header> 
-    <div class="menu">
-        <a href="index.php">Voltar para home</a>
-        <div class="login">
-
-        </div>
-        <div class="icons">
-            <a href="carrinho.php"><img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/000000/shopping-cart--v1.png" alt="shopping-cart--v1" /></a>
-        </div>
+     <div class="viel">
+      <a href="index.php">
+      <h2>viɘl</h2>
+      </a>
+    </div>
+      
+      <div class="menu">
+        <a href="sair.php">Desconectar-se</a>
     </div>
 </header>
 
@@ -161,10 +175,11 @@
 <section class="contato">
     <a href="listacliente.php"><button>Lista de Clientes</button></a>
     <a href="camisetas.php"><button>Cadastrar Produto</button></a>
+    <a href="listaprodutos.php"><button>Lista de Produtos</button></a>
 </section>
 
 <footer>
-    <p>&copy; 2024 Sua Empresa. Todos os direitos reservados.</p>
+    <p>&copy; 2024 viɘl. Todos os direitos reservados.</p>
 </footer>
 
 </body>
