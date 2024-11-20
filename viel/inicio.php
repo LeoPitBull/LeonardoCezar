@@ -9,6 +9,105 @@ include_once('config.php');
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
   <title>viɘl</title>
+  <style>
+  
+
+        /* Estilo para o carrossel */
+.carrossel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.carrossel-items {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.produto {
+    flex: 0 0 300px; /* Tamanho fixo para cada produto */
+    margin: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.produto a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.produto img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.card .info {
+    padding: 10px 0;
+}
+
+.card .nome {
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.card .descricao, .card .material, .card .quantidade, .card .preco {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+button {
+    padding: 10px;
+    background-color: grey;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #5d5d5d;
+}
+
+/* Estilos para os controles do carrossel */
+button.prev, button.next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 100;
+}
+
+button.prev {
+    left: 10px;
+}
+
+button.next {
+    right: 10px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .produto {
+        flex: 0 0 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .produto {
+        flex: 0 0 100%;
+    }
+}
+  </style>
 </head>
 <body>
 
@@ -105,7 +204,8 @@ include_once('config.php');
                 ";
             }
 
-            echo "</div>"; // Fechar o container
+            echo "</div>"; // Fechar o container do carrossel
+            echo "</div>"; // Fechar a div do carrossel
         } else {
             echo "<p>Nenhum produto encontrado.</p>";
         }
@@ -176,6 +276,35 @@ include_once('config.php');
         // Exibe um alerta informando que o carrinho não pode ser acessado
         alert("Desculpe, você precisa estar logado para acessar o carrinho.");
     });
+</script>
+
+<script>
+    let currentIndex = 0;
+    const items = document.querySelector('.carrossel-items');
+    const totalItems = document.querySelectorAll('.produto').length;
+
+    document.querySelector('.prev').addEventListener('click', () => {
+        if (currentIndex > 0) {
+            currentIndex--;
+        } else {
+            currentIndex = totalItems - 1;
+        }
+        updateCarrossel();
+    });
+
+    document.querySelector('.next').addEventListener('click', () => {
+        if (currentIndex < totalItems - 1) {
+            currentIndex++;
+        } else {
+            currentIndex = 0;
+        }
+        updateCarrossel();
+    });
+
+    function updateCarrossel() {
+        const offset = -currentIndex * 320; // 320px é a largura do item + margem
+        items.style.transform = `translateX(${offset}px)`;
+    }
 </script>
 
 </body>

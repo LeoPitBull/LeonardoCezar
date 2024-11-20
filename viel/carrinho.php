@@ -285,7 +285,7 @@ nav a:hover {
             <div class="total">
                 <p><strong>Total do Carrinho:</strong> R$ <?php echo number_format($total, 2, ',', '.'); ?></p>
             </div>
-            <a href="checkout.php" class="button">Finalizar Compra</a>
+            <a href="checkout.php" class="button" >Finalizar Compra</a>
         <?php endif; ?>
     </div>
 </div>

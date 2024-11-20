@@ -58,6 +58,103 @@
             text-decoration: none;
         }
 
+
+        /* Estilo para o carrossel */
+.carrossel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.carrossel-items {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.produto {
+    flex: 0 0 300px; /* Tamanho fixo para cada produto */
+    margin: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.produto a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.produto img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.card .info {
+    padding: 10px 0;
+}
+
+.card .nome {
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.card .descricao, .card .material, .card .quantidade, .card .preco {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+button {
+    padding: 10px;
+    background-color: grey;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #5d5d5d;
+}
+
+/* Estilos para os controles do carrossel */
+button.prev, button.next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 100;
+}
+
+button.prev {
+    left: 10px;
+}
+
+button.next {
+    right: 10px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .produto {
+        flex: 0 0 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .produto {
+        flex: 0 0 100%;
+    }
+}
+
         
     </style>
 </head>
@@ -124,7 +221,8 @@
         $result = $conexao->query($sql);
 
         if ($result->num_rows > 0) {
-            echo "<div style='display: flex; flex-wrap: wrap; gap: 20px;'>"; // Container flexível para os cards
+            echo "<div class='carrossel'>";
+            echo "<div class='carrossel-items'>"; // Container do carrossel
 
             // Percorrer os resultados e exibir os produtos
             while ($row = $result->fetch_assoc()) {
@@ -132,12 +230,12 @@
                 $productUrl = "produto.php?id=" . $row['id'];
 
                 echo "
-                <div class='produto' style='border: 1px solid #ddd; border-radius: 8px; width: 300px; padding: 15px;'>
-                    <a href='" . $productUrl . "' style='text-decoration: none; color: inherit;'>
+                <div class='produto'>
+                    <a href='" . $productUrl . "'>
                         <div class='card'>
-                            <img src='" . htmlspecialchars($row["imagem"]) . "' alt='Imagem do produto' style='width: 100%; height: auto; border-radius: 8px;'>
+                            <img src='" . htmlspecialchars($row["imagem"]) . "' alt='Imagem do produto'>
                             <div class='info'>
-                                <p class='nome' style='font-weight: bold; margin: 10px 0;'>" . htmlspecialchars($row['cor']) . " - " . htmlspecialchars($row['tamanho']) . "</p>
+                                <p class='nome'>" . htmlspecialchars($row['cor']) . " - " . htmlspecialchars($row['tamanho']) . "</p>
                                 <p class='descricao'>" . nl2br(htmlspecialchars($row['descricao'])) . "</p>
                                 <p class='material'><strong>Material:</strong> " . htmlspecialchars($row['material']) . "</p>
                                 <p class='quantidade'><strong>Estoque:</strong> " . htmlspecialchars($row['quantidade']) . "</p>
@@ -158,7 +256,10 @@
                 ";
             }
 
-            echo "</div>"; // Fechar o container
+            echo "</div>"; // Fechar o container do carrossel
+            echo "<button class='prev'>&#10094;</button>";
+            echo "<button class='next'>&#10095;</button>";
+            echo "</div>"; // Fechar a div do carrossel
         } else {
             echo "<p>Nenhum produto encontrado.</p>";
         }
@@ -168,6 +269,7 @@
         ?>
     </div>
 </section>
+
 
 
 
@@ -218,5 +320,35 @@
             }
         });
     </script>
+
+<script>
+    let currentIndex = 0;
+    const items = document.querySelector('.carrossel-items');
+    const totalItems = document.querySelectorAll('.produto').length;
+
+    document.querySelector('.prev').addEventListener('click', () => {
+        if (currentIndex > 0) {
+            currentIndex--;
+        } else {
+            currentIndex = totalItems - 1;
+        }
+        updateCarrossel();
+    });
+
+    document.querySelector('.next').addEventListener('click', () => {
+        if (currentIndex < totalItems - 1) {
+            currentIndex++;
+        } else {
+            currentIndex = 0;
+        }
+        updateCarrossel();
+    });
+
+    function updateCarrossel() {
+        const offset = -currentIndex * 320; // 320px é a largura do item + margem
+        items.style.transform = `translateX(${offset}px)`;
+    }
+</script>
+
 </body>
 </html>

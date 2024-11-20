@@ -175,7 +175,7 @@
 <section class="contato">
     <a href="listacliente.php"><button>Lista de Clientes</button></a>
     <a href="camisetas.php"><button>Cadastrar Produto</button></a>
-    <a href="listaprodutos.php"><button>Lista de Produtos</button></a>
+    <a href="listaproduto.php"><button>Lista de Produtos</button></a>
 </section>
 
 <footer>

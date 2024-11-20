@@ -125,7 +125,7 @@
 
     <header>
         <div class="viel">
-            <a href="index.html">
+            <a href="inicio.php">
             <h2>viɘl</h2>
             </a>
         </div>
